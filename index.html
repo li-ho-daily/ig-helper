@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌸 日本衣服上架助手 🌸</title>
+    <title>🌸 Li Ho Daily 上架小幫手 🌸</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #fcf8f7; color: #5a504e; margin: 0; padding: 20px; display: flex; justify-content: center; }
         .container { max-width: 600px; width: 100%; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e6dedc; }
@@ -27,7 +27,7 @@
         .btn-secondary:hover { background-color: #d1c7c4; }
         
         /* 🔄 製作下一個按鈕：清爽淡粉 */
-        .btn-clear { background-color: #f5f0ee; color: #8c7670; border: 1px solid #e6dedc; margin-top: 10px; }
+        .btn-clear { background-color: #f5f0ee; color: #8c7670; border: 1px solid #e6dedc; margin-top: 10px; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; cursor: pointer; font-weight: 600; }
         .btn-clear:hover { background-color: #ebdfe9; }
 
         .upload-area { border: 2px dashed #e6dedc; padding: 30px; text-align: center; border-radius: 8px; background: #faf8f7; cursor: pointer; transition: all 0.2s; }
@@ -96,20 +96,20 @@
         
         <div class="form-group">
             <label for="itemName">商品名稱（中文）</label>
-            <input type="text" id="itemName" placeholder="例：奶油色針織毛衣">
+            <input type="text" id="itemName" placeholder="例：pairmanon 可愛童話刺繡純棉短袖上衣">
         </div>
         <div class="form-group">
-            <label for="itemSizes">尺寸（空格分隔）</label>
-            <input type="text" id="itemSizes" placeholder="例：S M L XL Free">
+            <label for="itemSizes">尺寸顏色庫存（分行或空格分隔）</label>
+            <textarea id="itemSizes" rows="3" placeholder="例：&#10;白貝殼: 100-120CM&#10;白高跟鞋: 90-140CM、150少量&#10;紫色花園: 90-110CM"></textarea>
         </div>
         <div class="form-group">
-            <label for="itemNotes">備註（顏色、材質、備貨天數等）</label>
-            <textarea id="itemNotes" rows="3" placeholder="在這裡貼上日本商品原始網址，或輸入其他補充說明..."></textarea>
+            <label for="itemNotes">備註（貼上日本商品原始網址，或輸入其他補充說明）</label>
+            <textarea id="itemNotes" rows="3" placeholder="在這裡貼上日本商品原始網址..."></textarea>
         </div>
     </div>
 
     <button id="generateBtn" class="main-btn" onclick="generateContent()">✨ 生成日系清新風文案 ✨</button>
-    <button class="main-btn btn-clear" onclick="clearFields()">🔄 製作下一個文案（清除欄位）</button>
+    <button class="btn-clear" onclick="clearFields()">🔄 製作下一個文案（清除欄位）</button>
 
     <div class="status" id="statusMsg"></div>
 
@@ -145,14 +145,14 @@
         const key = document.getElementById('apiKey').value.trim();
         localStorage.setItem('gemini_api_key', key);
         document.getElementById('keyStatus').style.display = 'inline';
-        alert('金鑰儲存成功！');
+        alert('金鑰儲存成功！🌸');
     }
 
     function saveSheetUrl() {
         const url = document.getElementById('sheetUrl').value.trim();
         localStorage.setItem('sheet_url', url);
         document.getElementById('sheetStatus').style.display = 'inline';
-        alert('試算表網址儲存成功！');
+        alert('試算表網址儲存成功！🌸');
     }
 
     function calculateTwd() {
@@ -181,7 +181,6 @@
         });
     }
 
-    // 🔄 清除欄位功能（保留金鑰與網址）
     function clearFields() {
         document.getElementById('imageInput').value = '';
         document.getElementById('previewContainer').innerHTML = '';
@@ -223,25 +222,27 @@
             const base64Image = reader.result.split(',')[1];
             const mimeType = file.type;
 
-            // 🧠 完美的 pairmanon 條列式選品文案 Prompt 大腦
             const prompt = `你是一位專業的日本母嬰服飾選品闆娘，說話風格非常溫柔、清新、親切、像在跟朋友分享好物。
 請根據這張衣服截圖與我提供的補充資訊，幫我撰寫一篇繁體中文的 IG 上架貼文。
 
 輸入的商品資訊：
 - 商品名稱：${itemName}
 - 闆娘嚴選價：NT$ ${twdPrice}
-- 尺寸庫存資訊：${itemSizes}
+- 尺寸顏色庫存資訊：${itemSizes}
 - 備註/原始網址：${itemNotes}
 
 文案寫作要求（請嚴格遵循以下格式）：
-1. 第一行直接寫出商品名稱。
-2. 接下來使用 ✨ 符號帶出三個吸引媽媽的商品大賣點（第一點強調100%純棉親膚透氣柔軟、第二點細膩刻畫衣服上的圖案或刺繡細節、第三點提供清新日常的穿搭建議）。
-3. 寫一段溫柔、邀請媽媽幫寶貝帶一件的甜美互動結尾。
-4. 換行，加入【📦 尺寸：】區塊，將我的尺寸資訊漂亮地分行排版。
-5. 換行，加入【💰 售價：】區塊，顯示 NT$ ${twdPrice}（運費另計）。
+1. 第一行直接寫出商品名稱 (例如：日牌pairmanon可愛童話刺繡純棉短袖上衣)。
+2. 接下來使用 ✨ 符號分三行帶出三個吸引媽媽的商品大賣點：
+   - 第一點：強調100%純棉親膚舒適、透氣柔軟、寶貝流汗流整天也不悶熱。
+   - 第二點：細膩刻畫並帶出衣服背後或圖案隱藏的細節 (如精緻的童話刺繡：小花園、高跟鞋與貝殼珍珠)，說明細節控媽媽必入。
+   - 第三點：提供清新日常的穿搭建議 (如隨便搭件牛仔褲、小裙子，就能輕鬆穿出日系清新感)。
+3. 寫一段溫柔的互動結尾，例如：「趕快幫寶貝帶一件，每天都穿得開心又可愛！❤️」
+4. 換行，加入【📦 尺寸：】區塊，把我輸入的尺寸顏色庫存資訊 (${itemSizes}) 原封不動且漂亮地分行排版。
+5. 換行，加入【💰 售價：】區塊，固定顯示「NT$ ${twdPrice} (運費另計)」。
 6. 換行，加入【🚚 配送：】固定寫「預購制，海外商品下單後約14-21天到貨」。
 7. 換行，加入【🛒 怎麼買：】固定寫「喜歡請直接私訊小編，或留言『款式+尺寸』幫您登記喔！❤️」。
-8. 如果備註欄有貼網址，請在購買方式附近加上提示或完整帶入網址：${itemNotes}。
+8. 如果備註欄有貼網址，請在購買方式附近加上提示或完整帶入網址。
 9. 結尾加上適量的可愛表情符號與相關日系穿搭的常用中文 hashtag（如 #日系童裝 #pairmanon #溫柔風 #選品店 #純棉T）。
 
 ⚠️ 重要：請直接輸出最終可在 IG 發文的純文字，絕對不要夾帶任何 markdown 語法（如 \`\`\` ）。`;
@@ -282,7 +283,7 @@
                                     url: itemNotes
                                 })
                             });
-                            statusMsg.innerText = '🎉 文案已生成，且商品已成功寫入 Google 試算表囉！';
+                            statusMsg.innerText = '🎉 文案已生成，且商品已成功寫入 Google 試算表囉！🌸';
                         } catch (sheetError) {
                             console.error(sheetError);
                             statusMsg.innerText = '✅ 文案已生成，但寫入試算表失敗，請檢查 Apps Script 網址。';
